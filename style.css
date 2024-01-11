@@ -1,0 +1,135 @@
+* {
+    box-sizing: border-box;
+    color: white;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.pageContainer {
+    height: 100vh;
+    width: 100vw;
+    padding: 5%;
+    background-position: 0% 60%;
+    background-size: cover;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(https://cdn.pixabay.com/photo/2013/08/26/09/40/silhouette-175970_1280.jpg)
+}
+
+.contentContainer {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template: 
+    "top" 1fr 
+    "." 1fr
+    "bot" 1fr / 1fr;
+}
+
+.topInfo {
+grid-area: top;
+display: grid;
+grid-auto-flow: column;
+grid-template-columns: 1fr 1fr 1fr;
+/* gap: 15%; */
+justify-items: center;
+}
+
+.topInfo > div {
+    max-width: 75%;
+}
+
+.mainInfoContainer > * {
+    margin: 0.5rem 0;
+    font-weight: 100;
+}
+
+.mainInfoContainer > p {
+    margin: 0.5rem 0;
+    font-weight: 100;
+    font-size: 0.9rem;
+}
+
+.header {
+    margin-top: 0;
+    font-size: 2.35rem;
+    letter-spacing: 2px;
+    font-weight: 500;
+}
+
+.searchBoxContainer {
+    position: relative;
+}
+
+.searchButton {
+    position: absolute;
+    height: 1.25rem;
+    width: 1.25rem;
+    top: 0.35rem;
+    left: 11rem;
+    left: 83%
+}
+
+.searchBox {
+    background-color: transparent;
+    outline: none;
+    border: 3px solid white;
+    border-radius: 10px;
+    height: 2rem;
+    padding: 0px 10px;
+    max-width: 100%;
+}
+
+.searchBox::placeholder {
+    color: white;
+}
+
+.sideDiv {
+    display: grid;
+    grid-template: 
+    "img label" 1.05rem
+    "img value" 1.8rem
+    /1fr 1fr;
+    align-content: center;
+}
+
+.sideDiv > img {
+    grid-area: img;
+    height: 45px;
+    width: 45px;
+}
+
+.sideDiv > p {
+    grid-area: label;
+    font-size: 0.75rem;
+}
+
+.sideDiv > h2 {
+    grid-area: value;
+    font-size: 1.35rem;
+}
+
+.mainInfoContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.sideInfoContainer {
+    display: grid;
+    grid-auto-flow: row;
+}
+
+.sideDiv * {
+    margin: 0
+}
+
+.botInfo {
+padding: 7.5% 0 0 0 ;
+grid-area: bot;
+}
+
+.forecastContainer {
+    height: 100%;
+    width: 100%;
+}
