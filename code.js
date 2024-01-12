@@ -103,14 +103,75 @@ async function getForecastJson (location="haifa") {
     return null}
 }
 
-let createForecastCell = (count) => {
-    
+let createDailyForecastCell = (forecast,count) => {
+    let div = document.createElement("div")
+    let day = document.createElement("p")
+    let temp = document.createElement("h2")
+    let icon = document.createElement("img")
+
+    div.classList = "forecastDiv"
+
+    let dayName = new Date()
+    dayName.setDate(dayName.getDate() + count)
+    dayName = dayName.toLocaleDateString('en-US',{weekday: "long"})
+
+    icon.src = "https:" + forecast.forecast.forecastday[count].day.condition.icon
+    temp.textContent = forecast.forecast.forecastday[count].day.avgtemp_c + "°C"
+    day.textContent = dayName
+
+    let cont = document.querySelector(".forecastContainer")
+    cont.appendChild(div)
+    div.appendChild(day)
+    div.appendChild(temp)
+    div.appendChild(icon)
 }
 
-async function runForecast() {
+async function runDailyForecast() {
     let forecastJson = await getForecastJson()
     let forecastArray = forecastJson.forecast.forecastday
     for (let i = 1; i < forecastArray.length; i++) {
+        createDailyForecastCell(forecastJson,i)
     }
 }
-runForecast()
+runDailyForecast()
+
+let createHourlyForecastCell = (forecast,count,startingHour) => {
+    let div = document.createElement("div")
+    let hour = document.createElement("p")
+    let temp = document.createElement("h2")
+    let icon = document.createElement("img")
+
+    div.classList = "forecastDiv"
+    let infoHour = startingHour + count
+    let forecastDayCount = 0
+
+    if (infoHour > 23) {infoHour = infoHour - 24
+        forecastDayCount = 1
+    }
+
+    icon.src = "https:" + forecast.forecast.forecastday[forecastDayCount].hour[infoHour].condition.icon
+    temp.textContent = forecast.forecast.forecastday[forecastDayCount].hour[infoHour].temp_c + "°C"
+    hour.textContent = infoHour
+
+    let cont = document.querySelector(".forecastContainer")
+    cont.appendChild(div)
+    div.appendChild(hour)
+    div.appendChild(temp)
+    div.appendChild(icon)
+
+}
+
+
+async function runHourlyForecast(startHourNum=14) {
+    let forecastJson = await getForecastJson()
+    let currentHour = new Date
+    currentHour = currentHour.getHours()
+    alert(currentHour)
+    startHour = startHourNum
+    for (let i = 0; i + startHourNum < startHourNum + 8; i++) {
+        createHourlyForecastCell(forecastJson,i,currentHour+startHourNum)
+    }
+}
+// runHourlyForecast()
+
+let dailyButton = document.querySelector()
