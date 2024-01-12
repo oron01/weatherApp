@@ -2,6 +2,8 @@ const RAINICON = "https://img.icons8.com/hatch/124/FFFFFF/heavy-rain.png"
 const SUNICON = "https://img.icons8.com/ios/100/FFFFFF/sun--v1.png"
 const CLOUDICON = "https://img.icons8.com/ios/100/FFFFFF/cloud--v1.png"
 
+let currentLocation = ["haifa"]
+
 let getWeatherJson = async (location="haifa") => {
     try {
     let response = await fetch(`http://api.weatherapi.com/v1/current.json?key=ad9dadca166a4007806152802240801&q=${location}`)
@@ -48,8 +50,8 @@ let createWeatherObject = (weatherData) => {
     return weatherObject
 }
 
-async function getWeather () {
-    let defaultWeatherData = await getWeatherJson()
+async function getWeather (searchValue) {
+    let defaultWeatherData = await getWeatherJson(searchValue)
     if (!defaultWeatherData) return
     console.log(defaultWeatherData)
     let weatherObject = createWeatherObject(defaultWeatherData)
@@ -85,13 +87,13 @@ let renderWeather = (weatherObject) => {
 
 }
 
-async function runSearch () {
-let weatherObj = await getWeather()
+async function runSearch (searchValue) {
+let weatherObj = await getWeather(searchValue)
 renderWeather(weatherObj)}
 
 runSearch()
 
-async function getForecastJson (location="haifa") {
+async function getForecastJson (location=currentLocation[0]) {
     try {
     let response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=ad9dadca166a4007806152802240801&q=${location}&days=8`)
     if (!response.ok) {throw new Error(`HTTP error! Status: ${response.status}`)}
@@ -126,12 +128,15 @@ let createDailyForecastCell = (forecast,count) => {
     div.appendChild(icon)
 }
 
-async function runDailyForecast() {
-    let forecastJson = await getForecastJson()
+async function runDailyForecast(searchValue=currentLocation[0]) {
+    let forecastJson = await getForecastJson(searchValue)
     let forecastArray = forecastJson.forecast.forecastday
     for (let i = 1; i < forecastArray.length; i++) {
         createDailyForecastCell(forecastJson,i)
     }
+
+    let moveHours = document.querySelector(".moveHours")
+    moveHours.style.display = "none"
 }
 runDailyForecast()
 
@@ -162,16 +167,120 @@ let createHourlyForecastCell = (forecast,count,startingHour) => {
 }
 
 
-async function runHourlyForecast(startHourNum=14) {
+async function runHourlyForecast(startHourNum=0) {
     let forecastJson = await getForecastJson()
     let currentHour = new Date
     currentHour = currentHour.getHours()
-    alert(currentHour)
-    startHour = startHourNum
+    // startHour = startHourNum
     for (let i = 0; i + startHourNum < startHourNum + 8; i++) {
         createHourlyForecastCell(forecastJson,i,currentHour+startHourNum)
     }
+    
+    let moveHours = document.querySelector(".moveHours")
+    moveHours.style.display = "flex"
 }
 // runHourlyForecast()
 
-let dailyButton = document.querySelector()
+let dailyButton = document.querySelector(".botButtons > span")
+let hourlyButton = document.querySelector(".botButtons > span + span")
+
+let getDaily = (e,searchValue=currentLocation[0]) => {
+    forecastContainer = document.querySelector(".forecastContainer")
+    forecastContainer.innerHTML = ""
+    forecastContainer.classList = "forecastContainer"
+    runDailyForecast(searchValue)
+
+    let clearActiveChoice = () => {
+        let selection = document.querySelectorAll(".botButtons > span")
+        for (let i = 0 ; i < selection.length ; i++) {
+        if (selection[i].classList.contains("activeBottomButton")) {
+            selection[i].classList.remove("activeBottomButton")
+        }
+    }
+}
+    clearActiveChoice()
+
+    let setActiveChoice = () => {
+        let selection = document.querySelectorAll(".botButtons>span")
+        selection[0].classList = "botButton activeBottomButton"
+    }
+    setActiveChoice()
+}
+
+
+let getHourly = (e,count=0) => {
+    forecastContainer = document.querySelector(".forecastContainer")
+    forecastContainer.innerHTML = ""
+    forecastContainer.classList = "forecastContainer hourlyForecastContainer"
+    runHourlyForecast(count)
+
+    let cleanActive = () => {
+        let hourButtons = document.querySelectorAll(".hourButton")
+        for (let i = 0 ; i < hourButtons.length ; i++) {
+            if (hourButtons[i].classList.contains("activeHourButton")) {
+                hourButtons[i].classList.remove("activeHourButton")
+            }
+        }
+    }
+    cleanActive()
+
+    let setActive = () => {
+        let hourButtons = document.querySelectorAll(".hourButton")
+        console.log(hourButtons)
+        if (count < 8) {hourButtons[0].classList.add("activeHourButton")}
+        else if (count > 8) {hourButtons[2].classList.add("activeHourButton")}
+        else {hourButtons[1].classList.add("activeHourButton")}
+
+    }
+    setActive()
+
+    let clearActiveChoice = () => {
+        let selection = document.querySelectorAll(".botButtons>span")
+        for (let i = 0 ; i < selection.length ; i++) {
+        if (selection[i].classList.contains("activeBottomButton")) {
+            selection[i].classList.remove("activeBottomButton")
+        }
+    }
+}
+    clearActiveChoice()
+
+    let setActiveChoice = () => {
+        let selection = document.querySelectorAll(".botButtons>span")
+        selection[1].classList = "botButton activeBottomButton"
+    }
+    setActiveChoice()
+
+}
+
+dailyButton.addEventListener("click",getDaily)
+hourlyButton.addEventListener("click",getHourly)
+
+let hourButtons = document.querySelectorAll(".hourButton")
+for (let i = 0; i < hourButtons.length ; i++) {
+    hourButtons[i].addEventListener("click",getHourly.bind(this,null,i*8))
+}
+
+let runFullSearch = async () => {
+    let searchBox = document.querySelector(".searchBox")
+    searchVal = searchBox.value
+    let test = await fetch(`http://api.weatherapi.com/v1/current.json?key=ad9dadca166a4007806152802240801&q=${searchVal}`)
+    if (!test.ok) {
+        alert("bad entry")
+        return}
+    currentLocation[0] = searchVal
+    runSearch(searchVal)
+    getDaily(searchVal)
+}
+
+let searchBox = document.querySelector(".searchBox")
+let searchButton = document.querySelector(".searchButton")
+searchButton.addEventListener("click",runFullSearch)
+searchBox.addEventListener("keydown",function (e) {
+    if (e.key == "Enter") {
+        runFullSearch()
+    }
+    })
+
+
+
+
