@@ -6,7 +6,7 @@ let currentLocation = ["haifa"]
 
 let getWeatherJson = async (location="haifa") => {
     try {
-    let response = await fetch(`http://api.weatherapi.com/v1/current.json?key=ad9dadca166a4007806152802240801&q=${location}`)
+    let response = await fetch(`https://api.weatherapi.com/v1/current.json?key=ad9dadca166a4007806152802240801&q=${location}`)
     if (!response.ok) {throw new Error(`HTTP error! Status: ${response.status}`)}
     let responseObj = await response.json()
     return responseObj
