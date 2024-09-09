@@ -95,7 +95,7 @@ runSearch()
 
 async function getForecastJson (location=currentLocation[0]) {
     try {
-    let response = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=ad9dadca166a4007806152802240801&q=${location}&days=8`)
+    let response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=ad9dadca166a4007806152802240801&q=${location}&days=8`)
     if (!response.ok) {throw new Error(`HTTP error! Status: ${response.status}`)}
     let responseObj = await response.json()
     console.log(responseObj)
@@ -263,7 +263,7 @@ for (let i = 0; i < hourButtons.length ; i++) {
 let runFullSearch = async () => {
     let searchBox = document.querySelector(".searchBox")
     searchVal = searchBox.value
-    let test = await fetch(`http://api.weatherapi.com/v1/current.json?key=ad9dadca166a4007806152802240801&q=${searchVal}`)
+    let test = await fetch(`https://api.weatherapi.com/v1/current.json?key=ad9dadca166a4007806152802240801&q=${searchVal}`)
     if (!test.ok) {
         alert("bad entry")
         return}
